@@ -1,0 +1,41 @@
+.rounded-t-5 {
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
+  }
+
+
+  @media (max-width: 550px) {
+    .rounded-tr-lg-0 {
+      border-top-right-radius: 0.5rem;
+      border-bottom-left-radius: 0rem;
+    }
+  }
+/* .login-button{
+    width: 49%;
+} */
+
+.signupLink{
+    margin-right: 50%;
+}
+
+
+.button-common {
+  /* Basic button styles */
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  text-decoration: none;
+  color: #fff;
+  background-color: #007bff !important;
+  border: 2px solid #007bff;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.button-common:hover {
+  /* Hover styles */
+  transform: scale(1.05); /* Scale up slightly on hover */
+  box-shadow: 0 0 10px rgba(0, 123, 255, 0.5); /* Add a soft shadow on hover */
+}

@@ -1,0 +1,9 @@
+body{
+    overflow-x: hidden;
+  }
+
+  #balance{
+    color: #78C2AD;
+    font-weight: bold;
+    font-size: 25px;
+  }
