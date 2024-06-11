@@ -8,11 +8,15 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import { deleteAnExpenseAPI, getUploadExpenseAPI, uploadExpenseAPI } from '../Services/allAPI';
 import Header from '../components/Header';
+import { useNavigate, useParams } from 'react-router-dom';
 
 
 function Expenses() {
+
+  const navigate = useNavigate()
   //state to hold the expense
   const [expense, setExpense] = useState([])
+  const [userId,setUserId] = useState("")
 
   const [expenseUploadstatus, setExpenseUploadStatus] = useState({})
   const [expenseDeleteStatus, setExpenseDeleteStatus] = useState(false)
@@ -24,6 +28,13 @@ function Expenses() {
     date: "",
     info: ""
   })
+
+  useEffect(()=>{
+    const userId = localStorage.getItem("user")
+    if(!userId) return navigate('/') 
+      setDetails({...details,userId})
+  },[])
+
   console.log(details);
 
   const handleClose = () => setShow(false);
@@ -33,11 +44,21 @@ function Expenses() {
   //Adding Expense
   const handleUpload = async () => {
     const { title, amount, date, info } = details
+
+    const user = localStorage.getItem("user")
+
     if (!title || !amount || !date || !info) {
       toast.info('please fill the form completely')
     } else {
-      const response = await uploadExpenseAPI(details)
+      const response = await uploadExpenseAPI({ 
+        title: title,
+        amount: amount,
+        date: date,
+        info: info,
+        userId: user
+      })
       console.log(response);
+
       if (response.status >= 200 && response.status < 300) {
 
         toast.success('Expense added successfully ')
@@ -48,6 +69,7 @@ function Expenses() {
           date: "",
           info: ""
         })
+        await getExpense()
         handleClose()
       } else {
         console.log(response);
@@ -58,13 +80,21 @@ function Expenses() {
   }
   //get expense
   const getExpense = async () => {
+    const user = localStorage.getItem("user")
+    console.log(user);
     const result = await getUploadExpenseAPI()
-    setExpense(result.data)
+    const exp = result.data?.filter(exp=>{
+      if(exp.userId==user){
+        return exp
+      }
+    })
+    setExpense(exp)
   }
 
   console.log(expense)
+
   let sum = 0
-  for (let i = 0; i < expense.length; i++) {
+  for (let i = 0; i < expense?.length; i++) {
     sum += Number(expense[i].amount)
   }
   console.log(sum)
@@ -73,7 +103,8 @@ function Expenses() {
   const handleDelete = async (id) => {
     const response = await deleteAnExpenseAPI(id)
     console.log(response)
-    setExpenseDeleteStatus(true)
+    getExpense()
+    //setExpenseDeleteStatus(true)
   }
 
 
@@ -81,6 +112,13 @@ function Expenses() {
     getExpense()
     setExpenseDeleteStatus(false)
   }, [expenseUploadstatus, expenseDeleteStatus])
+
+  useEffect(()=>{
+    const user = localStorage.getItem("user")
+    if(!user) return navigate('/')
+      setUserId(user)
+      getExpense()
+  },[])
 
 
   return (
@@ -93,10 +131,12 @@ function Expenses() {
             <h3 className='text-center' style={{ overflowY: 'hidden' }} ><b><span className='track'>Track Your Expenses: See Where Your Money Goes</span></b></h3>
 
             <div className='row'>
-              <div className='mt-3 pt-2 ms-5 w-100 rounded' style={{ backgroundColor: '#B4D3B2', height: '60px', textAlign: 'center' }}><h3 className='exp mt-2 ' style={{ color:'#2D3178', overflowY: 'hidden',fontWeight:'bolder' }}>Total Expense:  ₹{sum}</h3></div>
+              <div className='mt-3 p-2 mx-5 w-100  rounded' style={{ backgroundColor: '#B4D3B2', height: '60px', textAlign: 'center' }}><h3 className='exp mt-2 ' style={{ color:'#2D3178', overflowY: 'hidden',fontWeight:'bolder' }}>Total Expense:  ₹{sum}</h3></div>
                <div className="col-md-1"></div>
               <div className='col-md-3 rounded mt-5 pt-3'>
-                <div className='rounded p-2 ms-1'> <button className=' rounded btn btn-danger' type='button' onClick={handleShow}><FontAwesomeIcon icon={faPlus} className='pe-2' />Add Expense</button></div>
+                <div className='rounded p-2 ms-1'>
+                   <button className=' rounded btn btn-danger' type='button' onClick={handleShow}><FontAwesomeIcon icon={faPlus} className='pe-2' />Add Expense</button>
+                   </div>
                 <img src="https://cdn-icons-png.flaticon.com/512/2037/2037061.png" alt="" style={{ width: '180px', height: '170px' }} className='mt-3' />
 
               </div>
@@ -125,18 +165,19 @@ function Expenses() {
                   <Button variant="warning" onClick={handleClose}>
                     Close
                   </Button>
-                  <Button variant="success" onClick={handleUpload}>
+                  <Button variant="success" onClick={handleUpload}
+                   getExpense={getExpense} >
                     Add
                   </Button>
                 </Modal.Footer>
               </Modal>
 
-              <div className='col-md-6 rounded mt-4 pt-3 '>
+              <div className='col-md-7 rounded mt-5 pt-3 '>
 
-                {expense.length > 0 ?
+                {expense?.length > 0 ?
                  expense?.map((item) => (
                   
-                  <div className="container-fluid  source rounded mb-3" expenseUploadstatus={expenseUploadstatus} setExpenseUploadStatus={setExpenseUploadStatus} expenseDeleteStatus={expenseDeleteStatus} setExpenseDeleteStatus={setExpenseDeleteStatus}>
+                  <div className="container-fluid  source rounded mb-3"expenseUploadstatus={expenseUploadstatus} setExpenseUploadStatus={setExpenseUploadStatus} expenseDeleteStatus={expenseDeleteStatus} setExpenseDeleteStatus={setExpenseDeleteStatus}>
                   <div className='d-flex'>
                     <h6 className='text-dark'><FontAwesomeIcon icon={faGlobe} className='fa-1x me-2 pt-1 globe' />{item.title}</h6>
 
@@ -156,6 +197,7 @@ function Expenses() {
                 }
 
               </div>
+              <div className="col-md-1"></div>
             </div>
 
           </div>

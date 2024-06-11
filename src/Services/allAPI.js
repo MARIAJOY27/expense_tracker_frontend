@@ -35,16 +35,12 @@ export const deleteAnExpenseAPI= async(id)=>{
 
 
 //api to add users--Signup 
-export const addUsers = async (reqBody) => {
+export const addUsersApi = async (reqBody) => {
     return await commonAPI('POST', `${serverURL}/users`, reqBody)
 }
 
-//api to search is user
-export const getUsers = async () => {
+//api to search user
+export const getUsersApi = async () => {
     return await commonAPI('GET', `${serverURL}/users`, "")
 }
 
-//api to create session
-export const loginSession = async (reqBody) => {
-    return await commonAPI('POST', `${serverURL}/sessionCreate`, reqBody)
-}

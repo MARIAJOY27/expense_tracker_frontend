@@ -13,15 +13,13 @@ import {
     MDBCheckbox
 }
 from 'mdb-react-ui-kit';
-import { getUsers } from '../Services/allAPI';
-import { loginSession } from '../Services/allAPI';
+import { getUsersApi } from '../Services/allAPI';
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify';
 import { ToastContainer } from 'react-toastify';
 
 function Login() {
     const [users, setUsers] = useState([])
-  const [status,setStatus]= useState(true)
 
   const [detail, setDetail] = useState({ 
     email: "",
@@ -36,52 +34,38 @@ function Login() {
   }, [])
 
   const searchUser =async()=>{
-    const allUsers = await getUsers()
-    console.log(allUsers.data);
+    const allUsers = await getUsersApi()
+   // console.log(allUsers.data);
     setUsers(allUsers.data)
   }
 
 
   const navigate = useNavigate()
 
-  const handleSubmit = async () => {
 
+  const handleLogin = async()=>{
     const { email, password } = detail
     if (!email || !password)
     {
-      toast.info('please enter all fields')
+      toast.info('Please enter all the fields')
         return 
     }
-    let search = false
-
-   for (let i = 0; i < users.length; i++) {
-    console.log();
-
-    if (users[i].email == email) {
-      search = true
-      if (users[i].password == password) {
-        const response = await loginSession(email)
-        console.log(response,"this is the login  session ");
-        navigate('/home')
-      } else{
-        toast.info('wrong password')
-        return
+    await searchUser()
+    const user = users.find(u=>{
+      if(u.email===email && u.password===password){
+        return u 
       }
+    })
       
-    } 
-    // else{
-    //   toast.info('user not found')
-    //   return
-    // }
-   }
-   if(search == false)
-   {
-    toast.info('user not found')
-   }
+    if(!user) {
+      return toast.info('user not found')}
+      
+    localStorage.setItem("user",JSON.stringify(user.id))
+    navigate('/home')
 
-    
 
   }
+
 
   return (
     
@@ -110,7 +94,7 @@ function Login() {
                 <a href="!#">Forgot password?</a>
               </div>
               <div className='text-center'>
-                <button className=" btn mb-4 w-50 button-common"  onClick={handleSubmit}><span style={{fontSize:"18px",color:'white'}}>Sign In</span></button>
+                <button className=" btn mb-4 w-50 button-common"  onClick={handleLogin}><span style={{fontSize:"18px",color:'white'}}>Sign In</span></button>
                 </div>
              
 

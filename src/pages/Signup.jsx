@@ -15,17 +15,13 @@ import {
   MDBCheckbox
 }
   from 'mdb-react-ui-kit';
-import { addUsers } from '../Services/allAPI';
-import { getUsers } from '../Services/allAPI';
+import {  addUsersApi, getUsersApi  } from '../Services/allAPI';
 import { useNavigate } from 'react-router-dom'
 
 
 
 function Signup() {
-
   const [users, setUsers] = useState([])
-  const [status,setStatus]= useState(true)
-
   const [detail, setDetail] = useState({
     name: "",
     email: "",
@@ -41,11 +37,12 @@ function Signup() {
   }, [])
 
   const searchUser =async()=>{
-    const allUsers = await getUsers()
+    const allUsers = await getUsersApi()
     console.log(allUsers.data);
     setUsers(allUsers.data)
-  }
 
+  }
+  
 
   const navigate = useNavigate()
 
@@ -67,15 +64,15 @@ function Signup() {
       toast.info('Please enter all fields')
     } else {
       if (password != confirmPassword) {
-        toast.info('Password donot match')
+        toast.info('Password do not match')
         return
       }
-      const response = await addUsers(detail)
-      console.log(response);
-
+      const response = await addUsersApi(detail)
+     // console.log(response);
       if (response.status >= 200 && response.status < 300) {
-        toast.success('user added successfully')
+        toast.success('User added successfully')
         navigate('/')
+        
       }
 
     }
@@ -84,7 +81,6 @@ function Signup() {
 
 
   return (
-
 
     <MDBContainer className='my-5'>
       <h2 className='text-center'>Create a New Account</h2>

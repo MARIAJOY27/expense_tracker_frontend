@@ -3,11 +3,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react'
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
-import { faMoneyBillTransfer, faCircleQuestion, faCircleUser, faHouse } from '@fortawesome/free-solid-svg-icons'
+import { faMoneyBillTransfer, faCircleQuestion, faCircleUser, faHouse, faPowerOff } from '@fortawesome/free-solid-svg-icons'
 import Navbar from 'react-bootstrap/Navbar';
 import { Link } from 'react-router-dom';
 
+
 function Header() {
+  
   return (
     <>
       <Navbar expand="lg" className="bg-primary">
@@ -18,7 +20,6 @@ function Header() {
           <Navbar.Toggle aria-controls="basic-navbar-nav" /></Navbar.Brand>
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
-              {/* <Nav.Link className='text-light' href="#link"><FontAwesomeIcon icon={faGear} /></Nav.Link> */}
               <Link to={'/income'} style={{ textDecoration: 'none' }}>
                 <h5 className='text-light mt-2 me-3' >Income</h5></Link>
 
@@ -28,12 +29,15 @@ function Header() {
               <Link to={'/report'} style={{ textDecoration: 'none' }}>
                 <h5 className='text-light mt-2 ms-2 me-2' href="#link">Report</h5></Link>
 
-              <Nav.Link className='text-light' href=""><FontAwesomeIcon icon={faCircleQuestion} title="Help" /></Nav.Link>
+              <Nav.Link className='text-light' href=""><FontAwesomeIcon icon={faCircleQuestion} className='ms-2' size='xl' title="Help" /></Nav.Link>
 
-              <Link to={'/'} style={{ textDecoration: 'none' }}>
-                <Nav.Link className='text-light' href='#home' ><FontAwesomeIcon icon={faHouse} title="Home" /></Nav.Link></Link>
+              <Link to={'/home'} style={{ textDecoration: 'none' }}>
+                <Nav.Link className='text-light' href='#home' ><FontAwesomeIcon icon={faHouse} className='ms-3' size='xl' title="Home" /></Nav.Link></Link>
 
-              <Nav.Link className='text-light' ><FontAwesomeIcon icon={faCircleUser} title="Profile" /></Nav.Link>
+              <Nav.Link className='text-light' ><FontAwesomeIcon icon={faCircleUser} className='ms-3' size='xl' title="Profile" /></Nav.Link>
+
+                 <Link to={'/'} style={{ textDecoration: 'none' }}>
+                <Nav.Link className='text-light' href='#home' ><FontAwesomeIcon icon={faPowerOff} className='ms-3' size='xl' title='Logout' /></Nav.Link></Link>
 
 
             </Nav>
